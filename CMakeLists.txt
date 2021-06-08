@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(terminal-fps VERSION 0.1.0)
+set(CMAKE_C_STANDARD 99)
 
 # include(CTest)
 # enable_testing()
@@ -9,6 +10,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
+    m
     ncursesw
 )
 

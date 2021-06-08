@@ -10,18 +10,22 @@
 #include <wchar.h>
 #include <locale.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include <ncurses.h>
 
 #include "unicode_defines.h"
+
+/* Defines */
+#define MAX_DEPTH 16.0f
 
 /* Global variables */
 wchar_t *screenBuffer;
 wchar_t *map;
 int nScreenHeight, nScreenWidth;
 
-float fPlayerX = 0.0;
-float fPlayerY = 0.0;
+float fPlayerX = 8.0;
+float fPlayerY = 8.0;
 float fPlayerA = 0.0;
 
 float fFOV = M_PI / 4.0;
@@ -95,36 +99,86 @@ int main(int argc, char **argv)
 {
     setup();
 
-    for (int i = 0; i < nScreenHeight*nScreenWidth; i++) {
-        static int cnt = 0;
-        switch (cnt)
-        {
-        case 0:
-            screenBuffer[i] = LIGHT_BLOCK;
-            break;
-        case 1:
-            screenBuffer[i] = MEDIUM_BLOCK;
-            break;
-        case 2:
-            screenBuffer[i] = DARK_BLOCK;
-            break;
-        case 3:
-            screenBuffer[i] = FULL_BLOCK;
-            break;
-        } // switch
+    // for (int i = 0; i < nScreenHeight*nScreenWidth; i++) {
+    //     static int cnt = 0;
+    //     switch (cnt)
+    //     {
+    //     case 0:
+    //         screenBuffer[i] = LIGHT_BLOCK;
+    //         break;
+    //     case 1:
+    //         screenBuffer[i] = MEDIUM_BLOCK;
+    //         break;
+    //     case 2:
+    //         screenBuffer[i] = DARK_BLOCK;
+    //         break;
+    //     case 3:
+    //         screenBuffer[i] = FULL_BLOCK;
+    //         break;
+    //     } // switch
 
-        if (++cnt > 3) cnt = 0;
-    }
-    screenBuffer[nScreenHeight*nScreenWidth] = L'\0';
+    //     if (++cnt > 3) cnt = 0;
+    // }
+    // screenBuffer[nScreenHeight*nScreenWidth] = L'\0';
 
     int c;
     while((c = getch()) != 'q')
     {
+        // Calculate ray angle
+        for (int x = 0; x < nScreenWidth; x++)
+        {
+            float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float)x / (float)nScreenWidth) * fFOV;
+            float fDistanceToWall = 0.0f;
+            bool bHitWall = false;
 
+            // Unit vector for ray in player space
+            float fEyeX = sinf(fRayAngle);
+            float fEyeY = cosf(fRayAngle);
 
+            while(!bHitWall && fDistanceToWall < MAX_DEPTH)
+            {
+                fDistanceToWall += 0.1f;
+
+                int nTestX = (int)(fPlayerX + fEyeX * fDistanceToWall);
+                int nTestY = (int)(fPlayerY + fEyeY * fDistanceToWall);
+
+                // Bounds checking on ray
+                if (nTestX < 0 || nTestX >= nMapWidth || nTestY < 0 || nTestY >= nMapHeight)
+                {
+                    bHitWall = true;
+                    fDistanceToWall = MAX_DEPTH;
+                }
+                else
+                {
+                    if (map[nTestY * nMapWidth + nTestX] == L'#')
+                    {
+                        bHitWall = true;
+                    }
+                } //if
+            } // while
+
+            int nCeiling = ((float)nScreenHeight / 2.0f) - (float)nScreenHeight / fDistanceToWall;
+            int nFloor = nScreenHeight - nCeiling;
+
+            for (int y = 0; y < nScreenHeight; y++)
+            {
+                if (y < nCeiling)
+                {
+                    screenBuffer[y*nScreenWidth + x] = L' ';
+                }
+                else if (y <= nFloor)
+                {
+                    screenBuffer[y*nScreenWidth + x] = L'#';
+                }
+                else
+                {
+                    screenBuffer[y*nScreenWidth + x] = L' ';
+                }
+            } // for
+        } // for
 
         output_screen_buffer();
-        usleep(10);
+        usleep(1000);
     }
 
     clear();
