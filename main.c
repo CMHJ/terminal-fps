@@ -18,7 +18,7 @@
 /* Global variables */
 wchar_t *screenBuffer;
 wchar_t *map;
-int yMax, xMax;
+int nScreenHeight, nScreenWidth;
 
 float fPlayerX = 0.0;
 float fPlayerY = 0.0;
@@ -37,11 +37,11 @@ void setup(void)
     cbreak();
     nodelay(stdscr, true);
 
-    xMax = 120;
-    yMax = 40;
+    nScreenWidth = 120;
+    nScreenHeight = 40;
     // getmaxyx(stdscr, yMax, xMax);
 
-    screenBuffer = (wchar_t *)malloc((yMax*xMax + 1) * sizeof(wchar_t));
+    screenBuffer = (wchar_t *)malloc((nScreenHeight*nScreenWidth + 1) * sizeof(wchar_t));
     map = (wchar_t *)malloc((nMapHeight*nMapWidth + 1) * sizeof(wchar_t));
     wcscpy(map, L"################");
     wcscat(map, L"#..............#");
@@ -63,12 +63,12 @@ void setup(void)
 
 void output_screen_buffer(void)
 {
-    for (int y = 0; y < yMax; y++)
+    for (int y = 0; y < nScreenHeight; y++)
     {
-        for (int x = 0; x < xMax; x++)
+        for (int x = 0; x < nScreenWidth; x++)
         {
             // screenBuffer[ny*xMax + nx] = map[ny*nMapWidth + nx];
-            mvprintw(y, x, "%lc", screenBuffer[y*xMax + x]);
+            mvprintw(y, x, "%lc", screenBuffer[y*nScreenWidth + x]);
         }
     }
     refresh();
@@ -81,7 +81,7 @@ void draw_map(void)
     {
         for (int nx = 0; nx < nMapWidth; nx++)
         {
-            screenBuffer[ny*xMax + nx] = map[ny*nMapWidth + nx];
+            screenBuffer[ny*nScreenWidth + nx] = map[ny*nMapWidth + nx];
         }
     }
 }
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 {
     setup();
 
-    for (int i = 0; i < yMax*xMax; i++) {
+    for (int i = 0; i < nScreenHeight*nScreenWidth; i++) {
         static int cnt = 0;
         switch (cnt)
         {
@@ -115,14 +115,14 @@ int main(int argc, char **argv)
 
         if (++cnt > 3) cnt = 0;
     }
-    screenBuffer[yMax*xMax] = L'\0';
-    // draw_map();
-    output_screen_buffer();
-
+    screenBuffer[nScreenHeight*nScreenWidth] = L'\0';
 
     int c;
     while((c = getch()) != 'q')
     {
+
+
+
         output_screen_buffer();
         usleep(10);
     }
