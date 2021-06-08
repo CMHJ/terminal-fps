@@ -30,7 +30,7 @@ void setup(void)
     initscr();
     noecho();
     cbreak();
-    // nodelay(stdscr, true);
+    nodelay(stdscr, true);
 
     xMax = 1;
     yMax = 1;
@@ -73,47 +73,81 @@ int main(int argc, char **argv)
     screenBuffer[yMax*xMax] = L'\0';
     output_screen_buffer();
 
-    int c;
-    char buf[20];
-    while ((c = getch()) != 'q')
+    // Output map
+    for (int ny = 0; ny < nMapHeight; ny++)
     {
-        static int lc = 0;
-        static int cnt = 0;
-        if (c == -1)
+        for (int nx = 0; nx < nMapWidth; nx++)
         {
-            usleep(10000);
-            continue;
+            screenBuffer[ny*xMax + nx] = map[ny*nMapWidth + nx];
         }
-
-        if (c == lc)
-        {
-            cnt++;
-        }
-        else
-        {
-            cnt = 0;
-        }
-        lc = c;
-
-        memset(buf, 0, sizeof(buf));
-        sprintf(buf, "You pressed: %c! %d", c, cnt);
-        mvwprintw(stdscr, yMax/2, xMax/2, buf);
-        refresh();
-        // usleep(1000);
     }
-    // while(1)
-    // {
 
-    //     output_screen_buffer();
-    //     usleep(1000);
-    // }
+    int c;
+    while((c = getch()) != 'q')
+    {
+        output_screen_buffer();
+        usleep(10);
+    }
 
-    // clear();
-    // mvprintw(0, 0, "Press any key to exit...");
-    // nodelay(stdscr, false);
-    // getch();
+    clear();
+    mvprintw(0, 0, "Press any key to exit...");
+    nodelay(stdscr, false);
+    getch();
     free(screenBuffer);
     endwin();
 
     return EXIT_SUCCESS;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // int c;
+    // char buf[20];
+    // while ((c = getch()) != 'q')
+    // {
+    //     static int lc = 0;
+    //     static int cnt = 0;
+    //     if (c == -1)
+    //     {
+    //         usleep(10000);
+    //         continue;
+    //     }
+
+    //     if (c == lc)
+    //     {
+    //         cnt++;
+    //     }
+    //     else
+    //     {
+    //         cnt = 0;
+    //     }
+    //     lc = c;
+
+    //     memset(buf, 0, sizeof(buf));
+    //     sprintf(buf, "You pressed: %c! %d", c, cnt);
+    //     mvwprintw(stdscr, yMax/2, xMax/2, buf);
+    //     refresh();
+    //     // usleep(1000);
+    // }
