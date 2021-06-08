@@ -9,8 +9,11 @@
 #include <string.h>
 #include <wchar.h>
 #include <locale.h>
+#include <math.h>
 
 #include <ncurses.h>
+
+#include "unicode_defines.h"
 
 /* Global variables */
 wchar_t *screenBuffer;
@@ -20,6 +23,8 @@ int yMax, xMax;
 float fPlayerX = 0.0;
 float fPlayerY = 0.0;
 float fPlayerA = 0.0;
+
+float fFOV = M_PI / 4.0;
 
 int nMapHeight = 16;
 int nMapWidth = 16;
@@ -32,9 +37,9 @@ void setup(void)
     cbreak();
     nodelay(stdscr, true);
 
-    xMax = 1;
-    yMax = 1;
-    getmaxyx(stdscr, yMax, xMax);
+    xMax = 120;
+    yMax = 40;
+    // getmaxyx(stdscr, yMax, xMax);
 
     screenBuffer = (wchar_t *)malloc((yMax*xMax + 1) * sizeof(wchar_t));
     map = (wchar_t *)malloc((nMapHeight*nMapWidth + 1) * sizeof(wchar_t));
@@ -58,22 +63,20 @@ void setup(void)
 
 void output_screen_buffer(void)
 {
-    move(0, 0);
-    for (int i = 0; screenBuffer[i]; i++) { printw("%lc", screenBuffer[i]); }
+    for (int y = 0; y < yMax; y++)
+    {
+        for (int x = 0; x < xMax; x++)
+        {
+            // screenBuffer[ny*xMax + nx] = map[ny*nMapWidth + nx];
+            mvprintw(y, x, "%lc", screenBuffer[y*xMax + x]);
+        }
+    }
     refresh();
 }
 
-int main(int argc, char **argv)
+// Output map
+void draw_map(void)
 {
-    setup();
-
-    for (int i = 0; i < yMax*xMax; i++) {
-        screenBuffer[i] = L'\u2591';
-    }
-    screenBuffer[yMax*xMax] = L'\0';
-    output_screen_buffer();
-
-    // Output map
     for (int ny = 0; ny < nMapHeight; ny++)
     {
         for (int nx = 0; nx < nMapWidth; nx++)
@@ -81,6 +84,41 @@ int main(int argc, char **argv)
             screenBuffer[ny*xMax + nx] = map[ny*nMapWidth + nx];
         }
     }
+}
+
+void draw_stat_overlay(void)
+{
+
+}
+
+int main(int argc, char **argv)
+{
+    setup();
+
+    for (int i = 0; i < yMax*xMax; i++) {
+        static int cnt = 0;
+        switch (cnt)
+        {
+        case 0:
+            screenBuffer[i] = LIGHT_BLOCK;
+            break;
+        case 1:
+            screenBuffer[i] = MEDIUM_BLOCK;
+            break;
+        case 2:
+            screenBuffer[i] = DARK_BLOCK;
+            break;
+        case 3:
+            screenBuffer[i] = FULL_BLOCK;
+            break;
+        } // switch
+
+        if (++cnt > 3) cnt = 0;
+    }
+    screenBuffer[yMax*xMax] = L'\0';
+    // draw_map();
+    output_screen_buffer();
+
 
     int c;
     while((c = getch()) != 'q')
