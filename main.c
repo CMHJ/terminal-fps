@@ -36,24 +36,24 @@ void setup(void)
     yMax = 1;
     getmaxyx(stdscr, yMax, xMax);
 
-    // screenBuffer = (wchar_t *)malloc((yMax*xMax + 1) * sizeof(wchar_t));
-    // map = (wchar_t *)malloc((nMapHeight*nMapWidth + 1) * sizeof(wchar_t));
-    // wcscpy(map, L"################");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"#..............#");
-    // wcscat(map, L"################");
+    screenBuffer = (wchar_t *)malloc((yMax*xMax + 1) * sizeof(wchar_t));
+    map = (wchar_t *)malloc((nMapHeight*nMapWidth + 1) * sizeof(wchar_t));
+    wcscpy(map, L"################");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"#..............#");
+    wcscat(map, L"################");
 }
 
 void output_screen_buffer(void)
@@ -67,10 +67,11 @@ int main(int argc, char **argv)
 {
     setup();
 
-    // for (int i = 0; i < yMax*xMax; i++) {
-    //     screenBuffer[i] = L'\u2591';
-    // }
-    // screenBuffer[yMax*xMax] = L'\0';
+    for (int i = 0; i < yMax*xMax; i++) {
+        screenBuffer[i] = L'\u2591';
+    }
+    screenBuffer[yMax*xMax] = L'\0';
+    output_screen_buffer();
 
     int c;
     char buf[20];
@@ -107,16 +108,10 @@ int main(int argc, char **argv)
     //     usleep(1000);
     // }
 
-
-    /* There seems to be a buffer issue,
-    and wide chars don't play nice with printw,
-    have to call printw("%lc") in a loop */
-    // printw("%ls", screenBuf);
-
-    clear();
-    mvprintw(0, 0, "Press any key to exit...");
-    nodelay(stdscr, false);
-    getch();
+    // clear();
+    // mvprintw(0, 0, "Press any key to exit...");
+    // nodelay(stdscr, false);
+    // getch();
     free(screenBuffer);
     endwin();
 
