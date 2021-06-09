@@ -140,10 +140,21 @@ int main(int argc, char **argv)
     while((c = getch()) != 'q')
     {
         // Player movement
+        if (c == 'w')
+            fPlayerX += 0.0001f * (float)elapsedTime * sinf(fPlayerA);
+            fPlayerY += 0.0001f * (float)elapsedTime * cosf(fPlayerA);
+        if (c == 's')
+            fPlayerX -= 0.001f * (float)elapsedTime * sinf(fPlayerA);
+            fPlayerY -= 0.001f * (float)elapsedTime * cosf(fPlayerA);
         if (c == 'd')
-            fPlayerA -= 0.00001f * (float)elapsedTime;
+            fPlayerA -= 0.0001f * (float)elapsedTime;
         if (c == 'a')
-            fPlayerA += 0.00001f * (float)elapsedTime;
+            fPlayerA += 0.0001f * (float)elapsedTime;
+
+        if (fPlayerX > 16.0f) fPlayerX = 16.0f;
+        if (fPlayerY > 16.0f) fPlayerX = 16.0f;
+        if (fPlayerX < 0.0f) fPlayerX = 0.0f;
+        if (fPlayerY < 0.0f) fPlayerX = 0.0f;
 
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
