@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 
     uint64_t tsp1 = get_timestamp_micro();
     uint64_t tsp2 = get_timestamp_micro();
-    uint64_t elapsedTime = 0;
+    uint64_t elapsedTimeMs = 0;
     wchar_t buf[60];
 
     int c;
@@ -141,15 +141,15 @@ int main(int argc, char **argv)
     {
         // Player movement
         if (c == 'w')
-            fPlayerX += 0.0001f * (float)elapsedTime * sinf(fPlayerA);
-            fPlayerY += 0.0001f * (float)elapsedTime * cosf(fPlayerA);
+            fPlayerX += 0.0001f * (float)elapsedTimeMs * sinf(fPlayerA);
+            fPlayerY += 0.0001f * (float)elapsedTimeMs * cosf(fPlayerA);
         if (c == 's')
-            fPlayerX -= 0.001f * (float)elapsedTime * sinf(fPlayerA);
-            fPlayerY -= 0.001f * (float)elapsedTime * cosf(fPlayerA);
+            fPlayerX -= 0.001f * (float)elapsedTimeMs * sinf(fPlayerA);
+            fPlayerY -= 0.001f * (float)elapsedTimeMs * cosf(fPlayerA);
         if (c == 'd')
-            fPlayerA -= 0.0001f * (float)elapsedTime;
+            fPlayerA -= 0.0001f * (float)elapsedTimeMs;
         if (c == 'a')
-            fPlayerA += 0.0001f * (float)elapsedTime;
+            fPlayerA += 0.0001f * (float)elapsedTimeMs;
 
         if (fPlayerX > 16.0f) fPlayerX = 16.0f;
         if (fPlayerY > 16.0f) fPlayerX = 16.0f;
@@ -211,11 +211,11 @@ int main(int argc, char **argv)
 
         // Framerate check
         tsp2 = get_timestamp_micro();
-        elapsedTime = tsp2 - tsp1;
+        elapsedTimeMs = tsp2 - tsp1;
         tsp1 = tsp2;
-        swprintf(buf, 59, L"Frame time: %ld\n", elapsedTime);
+        swprintf(buf, 59, L"Frame time: %ld\n", elapsedTimeMs);
         wcscpy(screenBuffer, buf);
-        swprintf(buf, 59, L"Frame rate: %ldFPS\n", 1000000L/elapsedTime);
+        swprintf(buf, 59, L"Frame rate: %ldFPS\n", 1000000L/elapsedTimeMs);
         wcscpy(&screenBuffer[1*nScreenWidth], buf);
 
         draw_map(2, 0);
