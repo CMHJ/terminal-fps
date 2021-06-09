@@ -189,8 +189,22 @@ int main(int argc, char **argv)
                 } //if
             } // while
 
+            // Calculate distance to ceiling and floor
             int nCeiling = ((float)nScreenHeight / 2.0f) - (float)nScreenHeight / fDistanceToWall;
             int nFloor = nScreenHeight - nCeiling;
+
+            // Calculate wall shading
+            wchar_t nShade;
+            if (fDistanceToWall < MAX_DEPTH / 4.0f)        // Very close
+                nShade = FULL_BLOCK;
+            else if (fDistanceToWall < MAX_DEPTH / 3.0f)
+                nShade = DARK_BLOCK;
+            else if (fDistanceToWall < MAX_DEPTH / 2.0f)
+                nShade = MEDIUM_BLOCK;
+            else if (fDistanceToWall < MAX_DEPTH)
+                nShade = LIGHT_BLOCK;
+            else
+                nShade = EMPTY_BLOCK;                       // Very far away
 
             for (int y = 0; y < nScreenHeight; y++)
             {
@@ -200,7 +214,7 @@ int main(int argc, char **argv)
                 }
                 else if (y <= nFloor)
                 {
-                    screenBuffer[y*nScreenWidth + x] = L'#';
+                    screenBuffer[y*nScreenWidth + x] = nShade;
                 }
                 else
                 {
