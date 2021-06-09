@@ -79,13 +79,13 @@ void output_screen_buffer(void)
 }
 
 // Output map
-void draw_map(void)
+void draw_map(int y, int x)
 {
     for (int ny = 0; ny < nMapHeight; ny++)
     {
         for (int nx = 0; nx < nMapWidth; nx++)
         {
-            screenBuffer[ny*nScreenWidth + nx] = map[ny*nMapWidth + nx];
+            screenBuffer[(ny + y)*nScreenWidth + (nx + x)] = map[ny*nMapWidth + nx];
         }
     }
 }
