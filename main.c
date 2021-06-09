@@ -131,13 +131,24 @@ int main(int argc, char **argv)
     // }
     // screenBuffer[nScreenHeight*nScreenWidth] = L'\0';
 
+    uint64_t tsp1 = get_timestamp_micro();
+    uint64_t tsp2 = get_timestamp_micro();
+    uint64_t elapsedTime = 0;
+    wchar_t buf[60];
+
     int c;
     while((c = getch()) != 'q')
     {
+        // Player movement
+        if (c == 'd')
+            fPlayerA -= 0.00001f * (float)elapsedTime;
+        if (c == 'a')
+            fPlayerA += 0.00001f * (float)elapsedTime;
+
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
         {
-            float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float)x / (float)nScreenWidth) * fFOV;
+            float fRayAngle = (fPlayerA + fFOV / 2.0f) - ((float)x / (float)nScreenWidth) * fFOV;
             float fDistanceToWall = 0.0f;
             bool bHitWall = false;
 
@@ -187,6 +198,16 @@ int main(int argc, char **argv)
             } // for
         } // for
 
+        // Framerate check
+        tsp2 = get_timestamp_micro();
+        elapsedTime = tsp2 - tsp1;
+        tsp1 = tsp2;
+        swprintf(buf, 59, L"Frame time: %ld\n", elapsedTime);
+        wcscpy(screenBuffer, buf);
+        swprintf(buf, 59, L"Frame rate: %ldFPS\n", 1000000L/elapsedTime);
+        wcscpy(&screenBuffer[1*nScreenWidth], buf);
+
+        draw_map(2, 0);
         output_screen_buffer();
         usleep(1000);
     }
