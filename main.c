@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <math.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include <ncurses.h>
 
@@ -93,6 +94,15 @@ void draw_map(int y, int x)
 void draw_stat_overlay(void)
 {
 
+}
+
+uint64_t get_timestamp_micro(void)
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    uint64_t timestamp = ts.tv_sec * 1000000;
+    timestamp += ts.tv_nsec / 1000;
+    return timestamp;
 }
 
 int main(int argc, char **argv)
