@@ -144,17 +144,17 @@ int main(int argc, char **argv)
             fPlayerX += 0.0001f * (float)elapsedTimeMs * sinf(fPlayerA);
             fPlayerY += 0.0001f * (float)elapsedTimeMs * cosf(fPlayerA);
         if (c == 's')
-            fPlayerX -= 0.001f * (float)elapsedTimeMs * sinf(fPlayerA);
-            fPlayerY -= 0.001f * (float)elapsedTimeMs * cosf(fPlayerA);
+            fPlayerX -= 0.0001f * (float)elapsedTimeMs * sinf(fPlayerA);
+            fPlayerY -= 0.0001f * (float)elapsedTimeMs * cosf(fPlayerA);
         if (c == 'd')
             fPlayerA -= 0.0001f * (float)elapsedTimeMs;
         if (c == 'a')
             fPlayerA += 0.0001f * (float)elapsedTimeMs;
 
         if (fPlayerX > 16.0f) fPlayerX = 16.0f;
-        if (fPlayerY > 16.0f) fPlayerX = 16.0f;
+        if (fPlayerY > 16.0f) fPlayerY = 16.0f;
         if (fPlayerX < 0.0f) fPlayerX = 0.0f;
-        if (fPlayerY < 0.0f) fPlayerX = 0.0f;
+        if (fPlayerY < 0.0f) fPlayerY = 0.0f;
 
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
