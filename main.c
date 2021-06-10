@@ -52,15 +52,15 @@ void setup(void)
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
+    wcscat(map, L"#..........#...#");
+    wcscat(map, L"#..........#...#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
-    wcscat(map, L"#..............#");
-    wcscat(map, L"#..............#");
-    wcscat(map, L"#..............#");
+    wcscat(map, L"#.......########");
     wcscat(map, L"#..............#");
     wcscat(map, L"#..............#");
     wcscat(map, L"################");
@@ -89,6 +89,8 @@ void draw_map(int y, int x)
             screenBuffer[(ny + y)*nScreenWidth + (nx + x)] = map[ny*nMapWidth + nx];
         }
     }
+
+    screenBuffer[((int)fPlayerY + y)*nScreenWidth + (int)fPlayerX + x] = L'*';
 }
 
 void draw_stat_overlay(void)
@@ -141,20 +143,28 @@ int main(int argc, char **argv)
     {
         // Player movement
         if (c == 'w')
-            fPlayerX += 0.0001f * (float)elapsedTimeMs * sinf(fPlayerA);
-            fPlayerY += 0.0001f * (float)elapsedTimeMs * cosf(fPlayerA);
+        {
+            fPlayerX += 0.0001f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerY += 0.0001f * cosf(fPlayerA) * (float)elapsedTimeMs;
+        }
         if (c == 's')
-            fPlayerX -= 0.0001f * (float)elapsedTimeMs * sinf(fPlayerA);
-            fPlayerY -= 0.0001f * (float)elapsedTimeMs * cosf(fPlayerA);
+        {
+            fPlayerX -= 0.0001f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerY -= 0.0001f * cosf(fPlayerA) * (float)elapsedTimeMs;
+        }
         if (c == 'd')
-            fPlayerA -= 0.0001f * (float)elapsedTimeMs;
+        {
+            fPlayerA -= 0.00005f * (float)elapsedTimeMs;
+        }
         if (c == 'a')
-            fPlayerA += 0.0001f * (float)elapsedTimeMs;
+        {
+            fPlayerA += 0.00005f * (float)elapsedTimeMs;
+        }
 
-        if (fPlayerX > 16.0f) fPlayerX = 16.0f;
-        if (fPlayerY > 16.0f) fPlayerY = 16.0f;
-        if (fPlayerX < 0.0f) fPlayerX = 0.0f;
-        if (fPlayerY < 0.0f) fPlayerY = 0.0f;
+        // if (fPlayerX > 16.0f) fPlayerX = 16.0f;
+        // if (fPlayerY > 16.0f) fPlayerY = 16.0f;
+        // if (fPlayerX < 0.0f) fPlayerX = 0.0f;
+        // if (fPlayerY < 0.0f) fPlayerY = 0.0f;
 
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
@@ -227,7 +237,7 @@ int main(int argc, char **argv)
         tsp2 = get_timestamp_micro();
         elapsedTimeMs = tsp2 - tsp1;
         tsp1 = tsp2;
-        swprintf(buf, 59, L"Frame time: %ld\n", elapsedTimeMs);
+        swprintf(buf, 59, L"Frame time: %ld, X%.2f Y%.2f A%.2f\n", elapsedTimeMs, fPlayerX, fPlayerY, fPlayerA);
         wcscpy(screenBuffer, buf);
         swprintf(buf, 59, L"Frame rate: %ldFPS\n", 1000000L/elapsedTimeMs);
         wcscpy(&screenBuffer[1*nScreenWidth], buf);
