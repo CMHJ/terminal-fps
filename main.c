@@ -16,14 +16,17 @@
 #include <ncurses.h>
 
 #include "unicode_defines.h"
+#include "corner_pair.h"
 
 /* Defines */
 #define MAX_DEPTH 16.0f
+#define MAX_PAIRS 30
 
 /* Global variables */
 wchar_t *screenBuffer;
 wchar_t *map;
 int nScreenHeight, nScreenWidth;
+struct corner_pair cornerPairs[MAX_PAIRS];
 
 float fPlayerX = 8.0;
 float fPlayerY = 8.0;
@@ -108,6 +111,23 @@ uint64_t get_timestamp_micro(void)
     return timestamp;
 }
 
+void sort_corner_pairs(struct corner_pair* pairs, int size)
+{
+    float t;
+    for (int i = 0; i < size; ++i)
+    {
+        for (int j = i + 1; j < size; ++j)
+        {
+            if (pairs[i].distance > pairs[j].distance)
+            {
+                t = pairs[i].distance;
+                pairs[i].distance = pairs[j].distance;
+                pairs[j].distance = t;
+            }
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     setup();
@@ -162,6 +182,7 @@ int main(int argc, char **argv)
             float fRayAngle = (fPlayerA + fFOV / 2.0f) - ((float)x / (float)nScreenWidth) * fFOV;
             float fDistanceToWall = 0.0f;
             bool bHitWall = false;
+            bool bBoundary = false;
 
             // Unit vector for ray in player space
             float fEyeX = sinf(fRayAngle);
@@ -185,6 +206,28 @@ int main(int argc, char **argv)
                     if (map[nTestY * nMapWidth + nTestX] == L'#')
                     {
                         bHitWall = true;
+
+                        // Calculate whether ray is at wall boundary and draw divider
+                        int numPairs = 0;
+                        for (int tx = 0; tx < 2; tx++)
+                        {
+                            for (int ty = 0; ty < 2; ty++)
+                            {
+                                float vx = (float)nTestX + tx - fPlayerX;
+                                float vy = (float)nTestY + ty - fPlayerY;
+                                float d = sqrtf(vx*vx + vy*vy);
+                                float dot = (fEyeX * vx / d) + (fEyeY * vy / d);
+                                cornerPairs[numPairs].distance = d;
+                                cornerPairs[numPairs].dot = dot;
+                                numPairs++;
+                            }
+                        }
+
+                        // Sort pairs based on distance from closest to farthest
+                        sort_corner_pairs(cornerPairs, numPairs);
+                        float fBound = 0.001;
+                        if (acosf(cornerPairs[0].dot) < fBound) bBoundary = true;
+                        if (acosf(cornerPairs[1].dot) < fBound) bBoundary = true;
                     }
                 } //if
             } // while
@@ -205,6 +248,8 @@ int main(int argc, char **argv)
                 nShade = LIGHT_BLOCK;
             else
                 nShade = EMPTY_BLOCK;                       // Very far away
+
+            if (bBoundary) nShade = L'|';
 
             for (int y = 0; y < nScreenHeight; y++)
             {
