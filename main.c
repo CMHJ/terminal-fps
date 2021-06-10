@@ -207,7 +207,13 @@ int main(int argc, char **argv)
                 }
                 else
                 {
-                    screenBuffer[y*nScreenWidth + x] = L' ';
+                    float b = 1.0f - (((float)y - (float)nScreenHeight / 2.0f) / ((float)nScreenHeight / 2.0f));
+                    if (b < 0.25) nShade = L'#';
+                    else if (b < 0.5) nShade = L'x';
+                    else if (b < 0.75) nShade = L'-';
+                    else if (b < 0.9) nShade = L'.';
+                    else nShade = L' ';
+                    screenBuffer[y*nScreenWidth + x] = nShade;
                 }
             } // for
         } // for
