@@ -145,21 +145,21 @@ int main(int argc, char **argv)
         // Player movement
         if (c == 'w')
         {
-            fPlayerX += 0.0001f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerY += 0.0001f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerX += 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerY += 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
         }
         if (c == 's')
         {
-            fPlayerX -= 0.0001f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerY -= 0.0001f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerX -= 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerY -= 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
         }
         if (c == 'd')
         {
-            fPlayerA -= 0.00005f * (float)elapsedTimeMs;
+            fPlayerA -= 0.00001f * (float)elapsedTimeMs;
         }
         if (c == 'a')
         {
-            fPlayerA += 0.00005f * (float)elapsedTimeMs;
+            fPlayerA += 0.00001f * (float)elapsedTimeMs;
         }
 
         // if (fPlayerX > 16.0f) fPlayerX = 16.0f;
