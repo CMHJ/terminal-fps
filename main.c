@@ -123,13 +123,29 @@ int main(int argc, char **argv)
         // Player movement
         if (c == 'w')
         {
-            fPlayerX += 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerY += 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
         }
         if (c == 's')
         {
-            fPlayerX -= 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerY -= 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
+            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
+            fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
         }
         if (c == 'd')
         {
@@ -139,11 +155,6 @@ int main(int argc, char **argv)
         {
             fPlayerA += 0.00001f * (float)elapsedTimeMs;
         }
-
-        // if (fPlayerX > 16.0f) fPlayerX = 16.0f;
-        // if (fPlayerY > 16.0f) fPlayerY = 16.0f;
-        // if (fPlayerX < 0.0f) fPlayerX = 0.0f;
-        // if (fPlayerY < 0.0f) fPlayerY = 0.0f;
 
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
