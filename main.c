@@ -42,9 +42,10 @@ void setup(void)
     cbreak();
     nodelay(stdscr, true);
 
+    // resize_term(240, 320);
     nScreenWidth = 120;
     nScreenHeight = 40;
-    // getmaxyx(stdscr, yMax, xMax);
+    getmaxyx(stdscr, nScreenHeight, nScreenWidth);
 
     screenBuffer = (wchar_t *)malloc((nScreenHeight*nScreenWidth + 1) * sizeof(wchar_t));
     map = (wchar_t *)malloc((nMapHeight*nMapWidth + 1) * sizeof(wchar_t));
@@ -237,9 +238,9 @@ int main(int argc, char **argv)
         tsp2 = get_timestamp_micro();
         elapsedTimeMs = tsp2 - tsp1;
         tsp1 = tsp2;
-        swprintf(buf, 59, L"Frame time: %ld, X%.2f Y%.2f A%.2f\n", elapsedTimeMs, fPlayerX, fPlayerY, fPlayerA);
+        swprintf(buf, 59, L"Frame time: %ld, Frame rate: %ldFPS\n", elapsedTimeMs, 1000000L/elapsedTimeMs);
         wcscpy(screenBuffer, buf);
-        swprintf(buf, 59, L"Frame rate: %ldFPS\n", 1000000L/elapsedTimeMs);
+        swprintf(buf, 59, L" X%.2f Y%.2f A%.2f, Res: %dx%d\n", fPlayerX, fPlayerY, fPlayerA, nScreenWidth, nScreenHeight);
         wcscpy(&screenBuffer[1*nScreenWidth], buf);
 
         draw_map(2, 0);
