@@ -112,28 +112,6 @@ int main(int argc, char **argv)
 {
     setup();
 
-    // for (int i = 0; i < nScreenHeight*nScreenWidth; i++) {
-    //     static int cnt = 0;
-    //     switch (cnt)
-    //     {
-    //     case 0:
-    //         screenBuffer[i] = LIGHT_BLOCK;
-    //         break;
-    //     case 1:
-    //         screenBuffer[i] = MEDIUM_BLOCK;
-    //         break;
-    //     case 2:
-    //         screenBuffer[i] = DARK_BLOCK;
-    //         break;
-    //     case 3:
-    //         screenBuffer[i] = FULL_BLOCK;
-    //         break;
-    //     } // switch
-
-    //     if (++cnt > 3) cnt = 0;
-    // }
-    // screenBuffer[nScreenHeight*nScreenWidth] = L'\0';
-
     uint64_t tsp1 = get_timestamp_micro();
     uint64_t tsp2 = get_timestamp_micro();
     uint64_t elapsedTimeMs = 0;
