@@ -131,11 +131,15 @@ void sort_corner_pairs(struct corner_pair* pairs, int size)
 
 void update_player_movement(int *c, uint64_t *elapsedTimeMs)
 {
+        float moveIncrementX;
+        float moveIncrementY;
+
         // Player movement
-        if (*c == 'w')
+        switch (*c)
         {
-            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
-            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
+        case 'w':
+            moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
+            moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
             fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
             fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
 
@@ -144,11 +148,11 @@ void update_player_movement(int *c, uint64_t *elapsedTimeMs)
                 fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
                 fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
             }
-        }
-        if (*c == 's')
-        {
-            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
-            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
+            break;
+
+        case 's':
+            moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
+            moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
             fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
             fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
 
@@ -157,16 +161,45 @@ void update_player_movement(int *c, uint64_t *elapsedTimeMs)
                 fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
                 fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
             }
-        }
+            break;
+
+        case 'a':
+            moveIncrementX = 0.00005f * sinf(fPlayerA + M_PI_2) * (float)*elapsedTimeMs;
+            moveIncrementY = 0.00005f * cosf(fPlayerA + M_PI_2) * (float)*elapsedTimeMs;
+            fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
+            break;
+
+        case 'd':
+            moveIncrementX = 0.00005f * sinf(fPlayerA - M_PI_2) * (float)*elapsedTimeMs;
+            moveIncrementY = 0.00005f * cosf(fPlayerA - M_PI_2) * (float)*elapsedTimeMs;
+            fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
+            break;
 
         // Player turning
-        if (*c == KEY_RIGHT)
-        {
+        case KEY_RIGHT:
             fPlayerA -= 0.00001f * (float)*elapsedTimeMs;
-        }
-        if (*c == KEY_LEFT)
-        {
+            break;
+
+        case KEY_LEFT:
             fPlayerA += 0.00001f * (float)*elapsedTimeMs;
+            break;
+
+        default:
+            break;
         }
 }
 
