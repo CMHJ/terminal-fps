@@ -44,6 +44,7 @@ void setup(void)
     noecho();
     cbreak();
     nodelay(stdscr, true);
+    keypad(stdscr, true);
 
     // resize_term(240, 320);
     nScreenWidth = 120;
@@ -167,11 +168,13 @@ int main(int argc, char **argv)
                 fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
             }
         }
-        if (c == 'd')
+
+        // Player turning
+        if (c == KEY_RIGHT)
         {
             fPlayerA -= 0.00001f * (float)elapsedTimeMs;
         }
-        if (c == 'a')
+        if (c == KEY_LEFT)
         {
             fPlayerA += 0.00001f * (float)elapsedTimeMs;
         }
