@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 
 #include "unicode_defines.h"
 #include "corner_pair.h"
@@ -226,6 +226,7 @@ int main(int argc, char **argv)
                         // Sort pairs based on distance from closest to farthest
                         sort_corner_pairs(cornerPairs, numPairs);
                         float fBound = 0.001;
+                        // Draw 2 closest corners of a wall block
                         if (acosf(cornerPairs[0].dot) < fBound) bBoundary = true;
                         if (acosf(cornerPairs[1].dot) < fBound) bBoundary = true;
                     }
