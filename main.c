@@ -129,6 +129,47 @@ void sort_corner_pairs(struct corner_pair* pairs, int size)
     }
 }
 
+void update_player_movement(int *c, uint64_t *elapsedTimeMs)
+{
+        // Player movement
+        if (*c == 'w')
+        {
+            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
+            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
+            fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
+        }
+        if (*c == 's')
+        {
+            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)*elapsedTimeMs;
+            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)*elapsedTimeMs;
+            fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+            fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+
+            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
+            {
+                fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
+                fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
+            }
+        }
+
+        // Player turning
+        if (*c == KEY_RIGHT)
+        {
+            fPlayerA -= 0.00001f * (float)*elapsedTimeMs;
+        }
+        if (*c == KEY_LEFT)
+        {
+            fPlayerA += 0.00001f * (float)*elapsedTimeMs;
+        }
+}
+
 int main(int argc, char **argv)
 {
     setup();
@@ -141,43 +182,7 @@ int main(int argc, char **argv)
     int c;
     while((c = getch()) != 'q')
     {
-        // Player movement
-        if (c == 'w')
-        {
-            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
-            fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
-
-            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
-            {
-                fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
-                fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
-            }
-        }
-        if (c == 's')
-        {
-            float moveIncrementX = 0.00005f * sinf(fPlayerA) * (float)elapsedTimeMs;
-            float moveIncrementY = 0.00005f * cosf(fPlayerA) * (float)elapsedTimeMs;
-            fPlayerX -= moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
-            fPlayerY -= moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
-
-            if (map[(int)fPlayerY * nMapWidth + (int)fPlayerX] == L'#')
-            {
-                fPlayerX += moveIncrementX > 0.5 ? 0.5 : moveIncrementX;
-                fPlayerY += moveIncrementY > 0.5 ? 0.5 : moveIncrementY;
-            }
-        }
-
-        // Player turning
-        if (c == KEY_RIGHT)
-        {
-            fPlayerA -= 0.00001f * (float)elapsedTimeMs;
-        }
-        if (c == KEY_LEFT)
-        {
-            fPlayerA += 0.00001f * (float)elapsedTimeMs;
-        }
+        update_player_movement(&c, &elapsedTimeMs);
 
         // Calculate ray angle
         for (int x = 0; x < nScreenWidth; x++)
